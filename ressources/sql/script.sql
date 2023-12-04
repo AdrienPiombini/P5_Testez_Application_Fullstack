@@ -1,3 +1,6 @@
+create DATABASE P5_NumDev;
+use P5_NumDev;
+
 CREATE TABLE `TEACHERS` (
   `id` INT PRIMARY KEY AUTO_INCREMENT,
   `last_name` VARCHAR(40),

@@ -3,6 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { expect } from '@jest/globals';
 
 import { TeacherService } from './teacher.service';
+import { Teacher } from '../interfaces/teacher.interface';
 
 describe('TeacherService', () => {
   let service: TeacherService;
@@ -19,4 +20,5 @@ describe('TeacherService', () => {
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
+
 });
