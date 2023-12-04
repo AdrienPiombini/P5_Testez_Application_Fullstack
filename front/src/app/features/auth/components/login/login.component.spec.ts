@@ -86,14 +86,13 @@ describe('LoginComponent', () => {
    expect(routerSpy).toHaveBeenCalledWith(['/sessions']);
   });
 
-  // it('should throw an error', () => {
-  //   component.form.setValue({ email: 'test@mail.com', password: '1234' });
+  it('should throw an error', () => {
 
-  //  const authServiceSpy = jest
-  //   .spyOn(authService, 'login');
+   const authServiceSpy = jest
+    .spyOn(authService, 'login').mockReturnValue(throwError('error'));
 
-  //   component.submit();
+    component.submit();
 
-  //   expect(component.onError).toBe(true);
-  // })
+    expect(component.onError).toBe(true);
+  })
 });

@@ -10,16 +10,38 @@ import { expect } from '@jest/globals';
 
 import { RegisterComponent } from './register.component';
 import { AuthService } from '../../services/auth.service';
-import { empty, of } from 'rxjs';
+import { empty, of, throwError } from 'rxjs';
 import { Router } from '@angular/router';
+import { RegisterRequest } from '../../interfaces/registerRequest.interface';
 
 describe('RegisterComponent', () => {
   let component: RegisterComponent;
   let fixture: ComponentFixture<RegisterComponent>;
+  let authService: jest.Mocked<AuthService>;
+  let router: jest.Mocked<Router>;
+
+  const registerRequest = {
+    email : 'foo@bar.com',
+    firstName:'foo',
+    lastName: 'bar',
+    password:'secret'
+  };
 
   beforeEach(async () => {
+    authService = {
+      register: jest.fn(),
+      login: jest.fn(),
+    } as unknown as jest.Mocked<AuthService>;
+    router = {
+      navigate: jest.fn(),
+    } as unknown as jest.Mocked<Router>;
+
     await TestBed.configureTestingModule({
       declarations: [RegisterComponent],
+      providers:[
+        { provide: AuthService, useValue: authService },
+        { provide: Router, useValue: router },
+      ],
       imports: [
         BrowserAnimationsModule,
         HttpClientModule,
@@ -41,32 +63,23 @@ describe('RegisterComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should naigate to login route', () => { 
-    const formValue = {
-      email : 'foo@bar.com',
-      firstName:'foo',
-      lastName: 'bar',
-      password:'secret'
-    };
+  it('should navigate to login route', () => { 
+  authService.register.mockReturnValue(of(void 0))
+  component.form.setValue(registerRequest);
 
-    const authService = TestBed.inject(AuthService);
-    const authServiceSpy = jest.spyOn(authService, 'register').mockReturnValue(of(void 0))
+  component.submit();
 
+  expect(authService.register).toHaveBeenCalledWith(registerRequest);
+  expect(router.navigate).toHaveBeenCalledWith(['/login']);
 
-    let router = TestBed.inject(Router);
-    router = {
-      navigate: jest.fn(),
-    } as unknown as jest.Mocked<Router>;
-    const routerSpy = jest.spyOn(router, 'navigate');
-    component.form.setValue(formValue);
-
-    //omponent.submit();
-
-    //expect(authServiceSpy).toHaveBeenCalledWith(formValue);
-
-    // expect(routerSpy.na).toHaveBeenCalledWith(['/login']);
-
-
-    
   })
+
+  it('should throw', () => { 
+    authService.register.mockReturnValue(throwError('error'))
+    component.form.setValue(registerRequest);
+  
+    component.submit();
+    
+  expect(component.onError).toBe(true);
+    })
 });
