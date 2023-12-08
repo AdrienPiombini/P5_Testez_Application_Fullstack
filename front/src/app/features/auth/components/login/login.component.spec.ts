@@ -15,36 +15,24 @@ import { SessionInformation } from 'src/app/interfaces/sessionInformation.interf
 import { AuthService } from '../../services/auth.service';
 import { of, throwError } from 'rxjs';
 import { Router } from '@angular/router';
-import { error } from 'cypress/types/jquery';
+import { formValue, routerMock, sessionInformationMock, sessionServiceMock } from '../../mocked/mocked';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
   let fixture: ComponentFixture<LoginComponent>;
-
-  let router: Router;
-  let sessionService: SessionService;
+  // let sessionService: SessionService;
   let authService: AuthService;
-  const mockSessionInformation: SessionInformation = {
-    token: 'jwt',
-    type: '',
-    id: 1,
-    username: 'fooBar',
-    firstName: 'foo',
-    lastName: 'bar',
-    admin: true,
-  };
 
-  router = {
-    navigate: jest.fn(),
-  } as unknown as jest.Mocked<Router>;
+
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [LoginComponent],
       providers: [
-        SessionService,
+        // SessionService,
         AuthService,
-        { provide: Router, useValue: router },
+        { provide: Router, useValue: routerMock },
+        { provide: SessionService, useValue: sessionServiceMock },
       ],
       imports: [
         RouterTestingModule,
@@ -61,8 +49,7 @@ describe('LoginComponent', () => {
     fixture = TestBed.createComponent(LoginComponent);
     component = fixture.componentInstance;
     authService = TestBed.inject(AuthService);
-    sessionService = TestBed.inject(SessionService);
-    router = TestBed.inject(Router);
+    // sessionService = TestBed.inject(SessionService);
     fixture.detectChanges();
   });
 
@@ -71,13 +58,12 @@ describe('LoginComponent', () => {
   });
 
   it('should navigate to sessions ', () => {
-   component.form.setValue({ email: 'test@mail.com', password: '1234' });
-
+   component.form.setValue(formValue);
    const authServiceSpy = jest
     .spyOn(authService, 'login')
-    .mockReturnValue(of(mockSessionInformation));
-   const sessionServiceSpy = jest.spyOn(sessionService, 'logIn');
-   const routerSpy = jest.spyOn(router, 'navigate');
+    .mockReturnValue(of(sessionInformationMock));
+   const sessionServiceSpy = jest.spyOn(sessionServiceMock, 'logIn');
+   const routerSpy = jest.spyOn(routerMock, 'navigate');
 
    component.submit();
 
@@ -87,12 +73,8 @@ describe('LoginComponent', () => {
   });
 
   it('should throw an error', () => {
-
-   const authServiceSpy = jest
-    .spyOn(authService, 'login').mockReturnValue(throwError('error'));
-
+    jest.spyOn(authService, 'login').mockReturnValue(throwError('error'));
     component.submit();
-
     expect(component.onError).toBe(true);
   })
 });

@@ -10,37 +10,24 @@ import { expect } from '@jest/globals';
 
 import { RegisterComponent } from './register.component';
 import { AuthService } from '../../services/auth.service';
-import { empty, of, throwError } from 'rxjs';
+import {  of, throwError } from 'rxjs';
 import { Router } from '@angular/router';
 import { RegisterRequest } from '../../interfaces/registerRequest.interface';
+import { authServiceMock, registerRequest, routerMock } from '../../mocked/mocked';
+
+
 
 describe('RegisterComponent', () => {
   let component: RegisterComponent;
   let fixture: ComponentFixture<RegisterComponent>;
-  let authService: jest.Mocked<AuthService>;
-  let router: jest.Mocked<Router>;
-
-  const registerRequest = {
-    email : 'foo@bar.com',
-    firstName:'foo',
-    lastName: 'bar',
-    password:'secret'
-  };
 
   beforeEach(async () => {
-    authService = {
-      register: jest.fn(),
-      login: jest.fn(),
-    } as unknown as jest.Mocked<AuthService>;
-    router = {
-      navigate: jest.fn(),
-    } as unknown as jest.Mocked<Router>;
 
     await TestBed.configureTestingModule({
       declarations: [RegisterComponent],
       providers:[
-        { provide: AuthService, useValue: authService },
-        { provide: Router, useValue: router },
+        { provide: AuthService, useValue: authServiceMock },
+        { provide: Router, useValue: routerMock },
       ],
       imports: [
         BrowserAnimationsModule,
@@ -57,6 +44,7 @@ describe('RegisterComponent', () => {
     fixture = TestBed.createComponent(RegisterComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+
   });
 
   it('should create', () => {
@@ -64,18 +52,18 @@ describe('RegisterComponent', () => {
   });
 
   it('should navigate to login route', () => { 
-  authService.register.mockReturnValue(of(void 0))
+  authServiceMock.register.mockReturnValue(of(void 0));
   component.form.setValue(registerRequest);
 
   component.submit();
 
-  expect(authService.register).toHaveBeenCalledWith(registerRequest);
-  expect(router.navigate).toHaveBeenCalledWith(['/login']);
+  expect(authServiceMock.register).toHaveBeenCalledWith(registerRequest);
+  expect(routerMock.navigate).toHaveBeenCalledWith(['/login']);
 
   })
 
   it('should throw', () => { 
-    authService.register.mockReturnValue(throwError('error'))
+    authServiceMock.register.mockReturnValue(throwError('error'))
     component.form.setValue(registerRequest);
   
     component.submit();

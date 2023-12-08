@@ -13,7 +13,6 @@ import { SessionApiService } from '../../services/session-api.service';
   styleUrls: ['./form.component.scss']
 })
 export class FormComponent implements OnInit {
-
   public onUpdate: boolean = false;
   public sessionForm: FormGroup | undefined;
   public teachers$ = this.teacherService.all();
