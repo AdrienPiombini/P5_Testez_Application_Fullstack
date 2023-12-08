@@ -95,7 +95,7 @@ describe('FormComponent', () => {
 
   it('created a session', ()=> {
     component.onUpdate = false;
-    const sessionApiServicespy = jest.spyOn(sessionApiService, 'create');
+    const sessionApiServicespy = jest.spyOn(sessionApiService, 'create');;
 
     component.submit();
 

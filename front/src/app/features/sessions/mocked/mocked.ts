@@ -43,7 +43,8 @@ import { SessionApiService } from "../services/session-api.service";
   } as unknown as jest.Mocked<SessionApiService>;
 
   export const teacherMock: Teacher = {
-    id: 1, lastName: 'Doe',
+    id: 1,
+    lastName: 'Doe',
     firstName: 'John',
     createdAt: new Date(),
     updatedAt: new Date()
