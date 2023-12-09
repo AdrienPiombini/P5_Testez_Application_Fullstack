@@ -73,7 +73,7 @@ describe('LoginComponent', () => {
   });
 
   it('should throw an error', () => {
-    jest.spyOn(authService, 'login').mockReturnValue(throwError('error'));
+    jest.spyOn(authService, 'login').mockReturnValue(throwError(() => new Error()));
     component.submit();
     expect(component.onError).toBe(true);
   })

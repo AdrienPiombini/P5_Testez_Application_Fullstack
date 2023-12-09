@@ -63,7 +63,7 @@ describe('RegisterComponent', () => {
   })
 
   it('should throw', () => { 
-    authServiceMock.register.mockReturnValue(throwError('error'))
+    authServiceMock.register.mockReturnValue(throwError(() => new Error()))
     component.form.setValue(registerRequest);
   
     component.submit();
