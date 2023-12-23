@@ -33,7 +33,7 @@ public class SessionServiceTest {
     @Mock
     SessionRepository sessionRepository;
 
-    private Session mockSession;
+    private Session session;
     private Long sessionId;
     private User mockUser;
     private Long userId;
@@ -47,18 +47,18 @@ public class SessionServiceTest {
         Teacher mockTeacher = new Teacher(1L, "last_name", "first_name", date, date);
         mockUsersList = new ArrayList<>(1);
         mockUsersList.add(mockUser);
-        mockSession = new Session(1L, "sessionName", new Date(), "sessionDescription", mockTeacher, mockUsersList, date,
+        session = new Session(1L, "sessionName", new Date(), "sessionDescription", mockTeacher, mockUsersList, date,
                 date);
 
-        sessionId = mockSession.getId();
+        sessionId = session.getId();
         userId = mockUser.getId();
     }
 
     @Test
     void should_create_session() {
-        when(sessionRepository.save(mockSession)).thenReturn(mockSession);
-        Session session = sessionService.create(mockSession);
-        assertThat(session).isEqualTo(mockSession);
+        when(sessionRepository.save(session)).thenReturn(session);
+        Session newSession = sessionService.create(session);
+        assertThat(newSession).isEqualTo(session);
     }
 
     @Test
@@ -69,7 +69,7 @@ public class SessionServiceTest {
 
     @Test
     void should_find_all_sessions() {
-        List<Session> listSessionExpected = Arrays.asList(mockSession, mockSession);
+        List<Session> listSessionExpected = Arrays.asList(session, session);
         when(sessionRepository.findAll()).thenReturn(listSessionExpected);
         List<Session> listSessionsResult = sessionService.findAll();
         assertThat(listSessionsResult).isEqualTo(listSessionExpected);
@@ -77,9 +77,9 @@ public class SessionServiceTest {
 
     @Test
     void should_find_one_session() {
-        when(sessionRepository.findById(sessionId)).thenReturn(Optional.of(mockSession));
+        when(sessionRepository.findById(sessionId)).thenReturn(Optional.of(session));
         Session expectedSession = sessionService.getById(sessionId);
-        assertThat(expectedSession).isEqualTo(mockSession);
+        assertThat(expectedSession).isEqualTo(session);
     }
 
     @Test
@@ -87,12 +87,12 @@ public class SessionServiceTest {
         Long fakeUserId = 9L;
         Long fakeSessionId = 19L;
         assertThrows(NotFoundException.class, () -> sessionService.participate(fakeSessionId, userId));
-        assertThrows(NotFoundException.class, () -> sessionService.participate(mockSession.getId(), fakeUserId));
+        assertThrows(NotFoundException.class, () -> sessionService.participate(session.getId(), fakeUserId));
     }
 
     @Test
     void should_throw_when_user_already_participate() {
-        when(sessionRepository.findById(sessionId)).thenReturn(Optional.of(mockSession));
+        when(sessionRepository.findById(sessionId)).thenReturn(Optional.of(session));
         when(userRepository.findById(userId)).thenReturn(Optional.of(mockUser));
         assertThrows(BadRequestException.class, () -> sessionService.participate(sessionId, userId));
     }
@@ -100,14 +100,14 @@ public class SessionServiceTest {
     @Test
     void should_add_user_to_session() {
         mockUsersList.clear();
-        when(sessionRepository.findById(sessionId)).thenReturn(Optional.of(mockSession));
+        when(sessionRepository.findById(sessionId)).thenReturn(Optional.of(session));
         when(userRepository.findById(userId)).thenReturn(Optional.of(mockUser));
 
         sessionService.participate(sessionId, userId);
 
-        assertThat(mockSession.getUsers()).isEqualTo(mockUsersList);
-        assertThat(mockSession.getUsers().size()).isEqualTo(1);
-        verify(sessionRepository).save(mockSession);
+        assertThat(session.getUsers()).isEqualTo(mockUsersList);
+        assertThat(session.getUsers().size()).isEqualTo(1);
+        verify(sessionRepository).save(session);
     }
 
     @Test
@@ -119,19 +119,19 @@ public class SessionServiceTest {
     @Test
     void should_throw_when_user_not_participate() {
         mockUsersList.clear();
-        when(sessionRepository.findById(sessionId)).thenReturn(Optional.of(mockSession));
+        when(sessionRepository.findById(sessionId)).thenReturn(Optional.of(session));
         assertThrows(BadRequestException.class, () -> sessionService.noLongerParticipate(sessionId, userId));
     }
 
     @Test
     void should_remove_user_of_session() {
-        when(sessionRepository.findById(sessionId)).thenReturn(Optional.of(mockSession));
+        when(sessionRepository.findById(sessionId)).thenReturn(Optional.of(session));
         when(userRepository.findById(userId)).thenReturn(Optional.of(mockUser));
 
         sessionService.noLongerParticipate(sessionId, userId);
 
-        assertThat(mockSession.getUsers().size()).isEqualTo(0);
-        verify(sessionRepository).save(mockSession);
+        assertThat(session.getUsers().size()).isEqualTo(0);
+        verify(sessionRepository).save(session);
     }
 
 }

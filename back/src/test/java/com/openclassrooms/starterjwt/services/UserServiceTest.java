@@ -26,12 +26,12 @@ public class UserServiceTest {
     @Mock
     UserRepository userRepository;
 
-    private User mockUser;
+    private User user;
     private Long userId;
 
     @BeforeEach
     void setup() {
-        mockUser = new User(
+        user = new User(
                 1L,
                 "foo@bar.com",
                 "foo",
@@ -41,7 +41,7 @@ public class UserServiceTest {
                 LocalDateTime.now(),
                 LocalDateTime.now());
 
-        userId = mockUser.getId();
+        userId = user.getId();
     }
 
     @Test
@@ -52,8 +52,8 @@ public class UserServiceTest {
 
     @Test
     void should_find_user_byId() {
-        when(userRepository.findById(userId)).thenReturn(Optional.of(mockUser));
-        User user = userService.findById(mockUser.getId());
-        assertThat(user).isEqualTo(mockUser);
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        User result = userService.findById(user.getId());
+        assertThat(result).isEqualTo(user);
     }
 }
